@@ -1,9 +1,10 @@
 import { define } from "../../utils.ts";
 
 export const handler = define.handlers({
-  GET() {
-    return new Response(JSON.stringify({ now: new Date().toISOString() }), {
-      headers: { "Content-Type": "application/json" },
-    });
+  GET(ctx) {
+    const name = ctx.params.name;
+    return new Response(
+      `Hello, ${name.charAt(0).toUpperCase() + name.slice(1)}!`,
+    );
   },
 });
