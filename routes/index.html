@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+  <style>
+    #gameBoard {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 10px;
+      width: 320px;
+      height: 320px;
+      border: 2px solid black;
+      padding: 10px;
+    }
+
+  .hole {
+      background-color: lightgray;
+      border: 1px solid black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+  .mole {
+      width: 80px;
+      height: 80px;
+      background-image: url('1.png');
+      background-size: cover;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>打地鼠游戏</h2>
+  <p>积分: <span id="score">50</span></p>
+  <div id="gameBoard"></div>
+
+  <script>
+    // 游戏区域 DOM 元素
+    var gameBoard = document.getElementById('gameBoard');
+    var score = 50;
+    var moleTimer;
+    var moleTimeout;
+
+    // 初始化游戏板的每个坑
+    for (var i = 0; i < 9; i++) {
+      var hole = document.createElement('div');
+      hole.classList.add('hole');
+      hole.addEventListener('click', handleClick);
+      gameBoard.appendChild(hole);
+    }
+
+    // 处理点击事件
+    function handleClick(event) {
+      if (event.target.classList.contains('mole')) {
+        score += 10;
+        document.getElementById('score').textContent = score;
+        event.target.classList.remove('mole');
+        clearTimeout(moleTimeout);
+      }
+    }
+
+    // 生成地鼠
+    function spawnMole() {
+      var holes = gameBoard.children;
+      var randomHole = holes[Math.floor(Math.random() * holes.length)];
+
+      if (!randomHole.classList.contains('mole')) {
+        randomHole.classList.add('mole');
+
+        moleTimeout = setTimeout(function() {
+          if (randomHole.classList.contains('mole')) {
+            score -= 20;
+            if (score < 0) {
+              alert('游戏失败！');
+              clearInterval(moleTimer);
+            }
+            document.getElementById('score').textContent = score;
+            randomHole.classList.remove('mole');
+          }
+        }, 1500);
+      }
+    }
+
+    // 启动定时生成地鼠
+    moleTimer = setInterval(spawnMole, 500);
+
+    // 检查胜利条件
+    setInterval(function() {
+      if (score >= 800) {
+        alert('游戏胜利！');
+        clearInterval(moleTimer);
+      }
+    }, 100);
+  </script>
+</body>
+
+</html>
