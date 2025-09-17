@@ -1,11 +1,17 @@
-import { define } from "../../utils.ts";
+import { define } from "../../../utils.ts";
 
 export const handler = define.handlers({
   GET(ctx) {
-    const name = ctx.params.name;
-    return new Response(
-      `Hello, ${name.charAt(0).toUpperCase() + name.slice(1)}!`,
-    );
+    const max = Number(ctx.params.max);
+    if (!Number.isInteger(max) || max <= 0) {
+      return new Response(JSON.stringify({ error: "max must be a positive integer" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    const n = Math.floor(Math.random() * max);
+    return new Response(JSON.stringify({ max, random: n }), {
+      headers: { "Content-Type": "application/json" },
+    });
   },
 });
-
